@@ -122,12 +122,17 @@ QDRANT_COLLECTION = "docuquery_vectors"
 ```
 DocuQuery/
 ├── app.py                    ← Streamlit UI (main entry point)
-├── indexing.py               ← Standalone PDF indexing script
+├── chat.py                   ← Chat interface and LLM generation
+├── indexing.py               ← PDF parsing and vector DB indexing
+├── style.css                 ← Developer SaaS UI styling
+├── _envcheck.py              ← Environment verification script
 ├── .env.example              ← Environment template (copy to .env)
 ├── .gitignore                ← Protects API keys
 ├── requirements.txt          ← Python dependencies
 ├── docker-compose.yml        ← Local Qdrant with persistent storage
+├── nodejs.pdf                ← Sample document for testing
 ├── .streamlit/
+│   ├── config.toml           ← Streamlit theme and server config
 │   └── secrets.toml.example  ← Streamlit Cloud secrets template
 └── README.md
 ```
@@ -182,6 +187,16 @@ python indexing.py --pdf your_document.pdf --collection my_collection
 - **Never commit `.env`** — it's in `.gitignore`
 - **Rotate your API key** if it was ever committed: [aistudio.google.com/apikey](https://aistudio.google.com/apikey)
 - Use Streamlit Cloud secrets (not environment files) for production
+
+---
+
+## 🗺️ Roadmap
+
+- **Phase 1 (Quick wins):** View raw sources under citations, copy/regenerate/feedback actions on answers, export chat to Markdown.
+- **Phase 2 (RAG Quality):** Hybrid search (dense + sparse vectors), LLM cross-encoder re-ranking, diversity retrieval (MMR).
+- **Phase 3 (Persistence):** Document library (reopen without re-indexing), multi-document queries, jump-to-page preview.
+- **Phase 4 (Production Rigor):** Unified Dockerfile (app + DB), GitHub Actions CI, per-query observability (latency, cost).
+- **Phase 5 (Stretch):** Multi-format ingestion (DOCX, MD, URLs), OCR fallback, auth + per-user document isolation.
 
 ---
 
