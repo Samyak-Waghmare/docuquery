@@ -1,0 +1,51 @@
+# Environment & Secrets
+.env
+*.env
+.env.local
+.env.production
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+*.egg
+pip-wheel-metadata/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+ENV/
+
+# Qdrant local storage
+qdrant_storage/
+.qdrant/
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Uploaded PDFs (temp)
+uploaded_pdfs/
+temp_uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+.claude/
+*.swp
+*.swo
+
+# Logs
+*.log
+logs/
