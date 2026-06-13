@@ -125,11 +125,9 @@ DocuQuery/
 ├── chat.py                   ← Chat interface and LLM generation
 ├── indexing.py               ← PDF parsing and vector DB indexing
 ├── style.css                 ← Developer SaaS UI styling
-├── _envcheck.py              ← Environment verification script
 ├── .env.example              ← Environment template (copy to .env)
 ├── .gitignore                ← Protects API keys
 ├── requirements.txt          ← Python dependencies
-├── docker-compose.yml        ← Local Qdrant with persistent storage
 ├── nodejs.pdf                ← Sample document for testing
 ├── .streamlit/
 │   ├── config.toml           ← Streamlit theme and server config
