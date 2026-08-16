@@ -598,7 +598,7 @@ if st.session_state.status in ("idle", "indexing"):
           <div class="dq-card c3">
             <div class="ic" style="background:linear-gradient(135deg,rgba(52,211,153,0.2),rgba(52,211,153,0.08));color:#34d399;font-size:1.3rem;">③</div>
             <div class="t">Ask anything</div>
-            <div class="d">Get grounded, cited answers with exact page references — powered by Gemini 2.5 Flash.</div>
+            <div class="d">Get grounded, cited answers with exact page references — powered by Gemini 3.5 Flash.</div>
           </div>
         </div>
 
