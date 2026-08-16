@@ -1,4 +1,4 @@
-"""
+1"""
 DocuQuery — RAG Evaluation Script
 ===================================
 Measures Recall@K and MRR (Mean Reciprocal Rank) for the retrieval pipeline.
