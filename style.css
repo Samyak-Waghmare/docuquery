@@ -105,7 +105,7 @@ html, body, [data-testid="stApp"] {
 
 .block-container {
     max-width: 980px !important;
-    padding: 2rem 2rem 14rem !important;
+    padding: 0.1rem 2rem 6rem !important;
     margin: 0 auto !important;
     position: relative;
     z-index: 1;
