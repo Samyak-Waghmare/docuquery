@@ -468,6 +468,12 @@ if st.session_state.get("authentication_status"):
     </div>
     '''
 
+# Build auth buttons section for the topbar right side
+if st.session_state.get("authentication_status"):
+    auth_html = user_badge_html
+else:
+    auth_html = ""
+
 st.markdown(f"""
 <div class="dq-topbar">
   <div class="dq-logo">
@@ -486,9 +492,13 @@ st.markdown(f"""
     <div class="dq-brand-name">DocuQuery</div>
     <div class="dq-brand-sub">AI Document Intelligence</div>
   </div>
-  {user_badge_html}
+  <div class="dq-badges">
+    <span class="dq-badge green">✦ RAG Pipeline</span>
+    <span class="dq-badge violet">📍 Page Citations</span>
+    <span class="dq-badge blue">⚡ Gemini 3.5</span>
+    {auth_html}
+  </div>
 </div>
-<div style="height:20px"></div>
 """, unsafe_allow_html=True)
 
 if st.session_state.get("authentication_status"):
@@ -499,6 +509,11 @@ else:
     # Inject scoped style to make Sign In button black (col 2), Sign Up stays blue (col 3)
     st.markdown("""
     <style>
+    /* Auth buttons sit tight under the topbar */
+    div[data-testid="stHorizontalBlock"]:has(button) {
+        margin-top: -6px !important;
+        margin-bottom: 2px !important;
+    }
     div[data-testid="stHorizontalBlock"] div[data-testid="stColumn"]:nth-of-type(2) button[kind="secondary"] {
         background: #1c1c1e !important;
         border: 1px solid rgba(255,255,255,0.18) !important;
@@ -523,7 +538,7 @@ if st.session_state.status in ("idle", "indexing"):
     if st.session_state.status == "idle":
         st.markdown("""
         <div class="dq-hero">
-          <div class="dq-hero-badge">✦ Powered by Gemini 2.5 &amp; Qdrant</div>
+          <div class="dq-hero-badge">✦ Powered by Gemini 3.5 &amp; Qdrant</div>
           <div class="dq-hero-icon">📑</div>
           <h1>Chat with <span class="grad">any PDF,</span><br>get cited answers</h1>
           <p>Drop in a document — research paper, contract, manual, report — and
@@ -612,7 +627,7 @@ if st.session_state.status in ("idle", "indexing"):
           <div class="dq-feature f4">
             <div class="fic">⚡</div>
             <div class="ft">Streaming answers</div>
-            <div class="fd">Token-by-token streaming via Gemini 2.5 Flash — fast and responsive.</div>
+            <div class="fd">Token-by-token streaming via Gemini 3.5 — fast and responsive.</div>
           </div>
           <div class="dq-feature f5">
             <div class="fic">🔒</div>
@@ -649,7 +664,7 @@ if st.session_state.status in ("idle", "indexing"):
           <span class="dq-stack-badge s1">🐍 Python 3.11+</span>
           <span class="dq-stack-badge s2">🦜 LangChain</span>
           <span class="dq-stack-badge s3">🗃️ Qdrant Vector DB</span>
-          <span class="dq-stack-badge s4">✦ Gemini 2.5 Flash</span>
+          <span class="dq-stack-badge s4">✦ Gemini 3.5</span>
           <span class="dq-stack-badge s5">🔢 Gemini Embeddings</span>
           <span class="dq-stack-badge s6">🎈 Streamlit</span>
           <span class="dq-stack-badge s7">🔗 OpenAI-compatible API</span>
@@ -677,7 +692,7 @@ if st.session_state.status in ("idle", "indexing"):
               <h4>Built with</h4>
               <span>Python &amp; LangChain</span>
               <span>Qdrant Vector DB</span>
-              <span>Google Gemini 2.5</span>
+              <span>Google Gemini 3.5</span>
               <span>Streamlit UI</span>
               <span>PyPDF / RecursiveTextSplitter</span>
             </div>
