@@ -322,25 +322,25 @@ button[kind="secondary"]:hover {
 }
 
 /* ── Dialog / Modal buttons (streamlit-authenticator Login & Register) ── */
-/* Login Button (Blue) */
+/* Login & Register Form Submit Buttons (Emerald Green) */
 div[role="dialog"] div[data-testid="stFormSubmitButton"] button,
 div[role="dialog"] form button[kind="primaryFormSubmit"] {
-    background: #0a84ff !important;
-    border: 1px solid #0a84ff !important;
+    background: #28cd56 !important;
+    border: 1px solid #28cd56 !important;
     color: #ffffff !important;
     border-radius: var(--r-sm) !important;
     font-weight: 600 !important;
     font-size: 0.88rem !important;
     padding: 10px 20px !important;
     transition: all 0.18s ease !important;
-    box-shadow: 0 4px 14px rgba(10, 132, 255, 0.3) !important;
+    box-shadow: 0 4px 14px rgba(40, 205, 86, 0.3) !important;
 }
 div[role="dialog"] div[data-testid="stFormSubmitButton"] button:hover,
 div[role="dialog"] form button[kind="primaryFormSubmit"]:hover {
-    background: #0071e3 !important;
-    border-color: #0071e3 !important;
+    background: #23b74c !important;
+    border-color: #23b74c !important;
     transform: translateY(-1px) !important;
-    box-shadow: 0 6px 20px rgba(10, 132, 255, 0.4) !important;
+    box-shadow: 0 6px 20px rgba(40, 205, 86, 0.4) !important;
 }
 
 /* Fallback catch-all for any button in dialog that is NOT an icon or form submit */
