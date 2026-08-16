@@ -519,7 +519,7 @@ if st.session_state.get("authentication_status"):
     cols = st.columns([0.88, 0.12])
     with cols[1]:
         authenticator.logout("Sign Out")
-else:
+elif AUTH_ENABLED:
     # Inject scoped style to make Sign In button black (col 2), Sign Up stays blue (col 3)
     st.markdown("""
     <style>
@@ -865,7 +865,7 @@ elif st.session_state.status == "ready":
                     st.rerun()
 
     # ── Resolve prompt (chat box or a suggestion click) ────────────────────────
-    if not st.session_state.get("authentication_status") and st.session_state.get("anon_queries", 0) >= 2:
+    if AUTH_ENABLED and not st.session_state.get("authentication_status") and st.session_state.get("anon_queries", 0) >= 2:
         st.error("You have reached your 2 free queries limit. Please Sign Up to continue asking questions.")
         prompt = None
     else:
@@ -875,7 +875,7 @@ elif st.session_state.status == "ready":
         st.session_state.pending_prompt = None
 
     if prompt:
-        if not st.session_state.get("authentication_status"):
+        if AUTH_ENABLED and not st.session_state.get("authentication_status"):
             st.session_state["anon_queries"] = st.session_state.get("anon_queries", 0) + 1
         st.session_state.messages.append({"role": "user", "content": prompt, "citations": []})
         with st.chat_message("user", avatar="🧑‍💻"):
