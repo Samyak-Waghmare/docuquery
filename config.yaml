@@ -2,7 +2,7 @@ credentials:
   usernames: {}
 cookie:
   expiry_days: 30
-  key: docuquery_secure_cookie_key
+  key: SET_VIA_STREAMLIT_SECRETS
   name: docuquery_auth
 pre-authorized:
   emails: []
