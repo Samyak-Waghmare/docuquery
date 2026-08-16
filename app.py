@@ -187,25 +187,47 @@ def do_index(file_bytes: bytes, filename: str, on_step=None):
         except Exception:
             pass  # non-fatal
 
-        # 6. Embed + store in waves (respects free-tier rate limit)
+        # 6. Embed + store with robust retry logic (handles Gemini free-tier rate limits)
         emb  = _emb_model()
-        WAVE, PAUSE_S, BS = 80, 55.0, 80
-        total_waves = max(1, (len(chunks) + WAVE - 1) // WAVE)
+        BATCH_SIZE = 20
+        total_batches = max(1, (len(chunks) + BATCH_SIZE - 1) // BATCH_SIZE)
 
-        step("embed", f"Generating embeddings · wave 1/{total_waves}…")
-        first, rest = chunks[:WAVE], chunks[WAVE:]
-        vs = QdrantVectorStore.from_documents(
-            documents=first,
-            embedding=emb,
-            url=QDRANT_URL,
-            api_key=QDRANT_API_KEY,
-            collection_name=coll,
-            batch_size=BS,
-        )
-        for idx, i in enumerate(range(0, len(rest), WAVE), start=2):
-            step("embed", f"Rate-limit pause, then embedding wave {idx}/{total_waves}…")
-            time.sleep(PAUSE_S)
-            vs.add_documents(rest[i : i + WAVE], batch_size=BS)
+        vs = None
+        for i in range(0, len(chunks), BATCH_SIZE):
+            batch = chunks[i : i + BATCH_SIZE]
+            batch_num = (i // BATCH_SIZE) + 1
+            step("embed", f"Embedding batch {batch_num}/{total_batches}…")
+            
+            for attempt in range(5):
+                try:
+                    if vs is None:
+                        # First batch creates the Qdrant collection
+                        vs = QdrantVectorStore.from_documents(
+                            documents=batch,
+                            embedding=emb,
+                            url=QDRANT_URL,
+                            api_key=QDRANT_API_KEY,
+                            collection_name=coll,
+                        )
+                    else:
+                        # Subsequent batches add to the collection
+                        vs.add_documents(batch)
+                    break  # Success, exit retry loop
+                except Exception as e:
+                    err_msg = str(e).lower()
+                    if "429" in err_msg or "rate" in err_msg or "quota" in err_msg or "exhausted" in err_msg:
+                        wait_time = 2 ** attempt * 8  # 8s, 16s, 32s, 64s, 128s
+                        step("embed", f"API rate limit hit. Pausing {wait_time}s to recover (batch {batch_num})…")
+                        time.sleep(wait_time)
+                    else:
+                        raise e
+            else:
+                 raise RuntimeError("Gemini API rate limit exceeded even after 5 retries. Try a smaller PDF.")
+            
+            # Small standard delay between batches to avoid hitting limits
+            if i + BATCH_SIZE < len(chunks):
+                time.sleep(3)
+
         step("embed", f"Embedded & stored **{len(chunks)}** vectors", "done")
         step("ready", "Index ready — you can start asking questions", "done")
 
@@ -621,9 +643,13 @@ elif st.session_state.status == "ready":
         avatar = "🧑‍💻" if msg["role"] == "user" else "📑"
         with st.chat_message(msg["role"], avatar=avatar):
             st.markdown(msg["content"])
+            chips_html = ""
             if msg.get("citations"):
-                st.markdown(f'<div style="margin-top:8px">{cite_chips(msg["citations"])}</div>',
-                            unsafe_allow_html=True)
+                chips_html += cite_chips(msg["citations"])
+            if msg.get("latency"):
+                chips_html += f' <span class="dq-cite" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">⏱️ {msg["latency"]:.1f}s latency</span>'
+            if chips_html:
+                st.markdown(f'<div style="margin-top:8px">{chips_html}</div>', unsafe_allow_html=True)
 
     # ── Suggested questions on a fresh conversation ────────────────────────────
     if not st.session_state.messages:
@@ -673,14 +699,23 @@ elif st.session_state.status == "ready":
                 think.update(label="Answering", state="complete", expanded=False)
 
             try:
+                import time
+                t0 = time.time()
                 answer = st.write_stream(stream_answer(prompt, context, hist))
+                latency = time.time() - t0
             except Exception as e:
                 answer = f"⚠️ Error generating answer: {friendly_error(str(e))}"
                 st.error(answer)
+                latency = None
+                
+            chips_html = ""
             if citations:
-                st.markdown(f'<div style="margin-top:8px">{cite_chips(citations)}</div>',
-                            unsafe_allow_html=True)
+                chips_html += cite_chips(citations)
+            if latency:
+                chips_html += f' <span class="dq-cite" style="color:#a78bfa; border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08);">⏱️ {latency:.1f}s latency</span>'
+            if chips_html:
+                st.markdown(f'<div style="margin-top:8px">{chips_html}</div>', unsafe_allow_html=True)
 
         st.session_state.messages.append({
-            "role": "assistant", "content": answer, "citations": citations,
+            "role": "assistant", "content": answer, "citations": citations, "latency": latency
         })
