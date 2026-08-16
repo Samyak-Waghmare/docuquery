@@ -1,0 +1,141 @@
+{
+  "collection": "docuquery_vectors_nodejs_pdf",
+  "top_k": 5,
+  "recall_at_k": 0.0,
+  "mrr": 0.0,
+  "avg_latency": 1.2948184251785277,
+  "p50_latency": 1.2400579452514648,
+  "p95_latency": 1.6282222270965576,
+  "results": [
+    {
+      "q": "What is the default port used in Node.js HTTP server examples?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        38,
+        39,
+        37,
+        37,
+        38
+      ],
+      "latency": 1.6282222270965576
+    },
+    {
+      "q": "How does Node.js handle asynchronous operations using callbacks?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        30,
+        32,
+        25,
+        31,
+        30
+      ],
+      "latency": 1.1967217922210693
+    },
+    {
+      "q": "What is the purpose of the EventEmitter class in Node.js?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        26,
+        29,
+        7,
+        1,
+        5
+      ],
+      "latency": 1.1095550060272217
+    },
+    {
+      "q": "How do you read a file asynchronously using the fs module?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        9,
+        10,
+        9,
+        10,
+        30
+      ],
+      "latency": 1.495823860168457
+    },
+    {
+      "q": "What is the role of the package.json file in a Node.js project?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        11,
+        11,
+        12,
+        12,
+        13
+      ],
+      "latency": 1.2316899299621582
+    },
+    {
+      "q": "How does the require() function work in Node.js modules?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        10,
+        9,
+        10,
+        12,
+        11
+      ],
+      "latency": 1.168541431427002
+    },
+    {
+      "q": "What is the Node.js event loop and how does it work?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        26,
+        1,
+        30,
+        25,
+        7
+      ],
+      "latency": 1.312230110168457
+    },
+    {
+      "q": "How do you create a simple HTTP server in Node.js?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        38,
+        39,
+        37,
+        38,
+        36
+      ],
+      "latency": 1.2400579452514648
+    },
+    {
+      "q": "What is npm and what is it used for?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        12,
+        11,
+        12,
+        11,
+        13
+      ],
+      "latency": 1.1912689208984375
+    },
+    {
+      "q": "How do you handle errors in Node.js using try-catch?",
+      "hit": false,
+      "rr": 0.0,
+      "pages": [
+        29,
+        23,
+        24,
+        22,
+        1
+      ],
+      "latency": 1.3740730285644531
+    }
+  ]
+}

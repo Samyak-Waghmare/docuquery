@@ -1,0 +1,52 @@
+[
+  {
+    "q": "What is the default port used in Node.js HTTP server examples?",
+    "answer_page": 47,
+    "must_contain": ["3000"]
+  },
+  {
+    "q": "How does Node.js handle asynchronous operations using callbacks?",
+    "answer_page": 12,
+    "must_contain": ["callback", "asynchronous"]
+  },
+  {
+    "q": "What is the purpose of the EventEmitter class in Node.js?",
+    "answer_page": 22,
+    "must_contain": ["EventEmitter", "event"]
+  },
+  {
+    "q": "How do you read a file asynchronously using the fs module?",
+    "answer_page": 35,
+    "must_contain": ["fs.readFile", "fs"]
+  },
+  {
+    "q": "What is the role of the package.json file in a Node.js project?",
+    "answer_page": 5,
+    "must_contain": ["package.json", "dependencies"]
+  },
+  {
+    "q": "How does the require() function work in Node.js modules?",
+    "answer_page": 8,
+    "must_contain": ["require", "module"]
+  },
+  {
+    "q": "What is the Node.js event loop and how does it work?",
+    "answer_page": 18,
+    "must_contain": ["event loop"]
+  },
+  {
+    "q": "How do you create a simple HTTP server in Node.js?",
+    "answer_page": 45,
+    "must_contain": ["http.createServer", "createServer"]
+  },
+  {
+    "q": "What is npm and what is it used for?",
+    "answer_page": 4,
+    "must_contain": ["npm", "package manager"]
+  },
+  {
+    "q": "How do you handle errors in Node.js using try-catch?",
+    "answer_page": 60,
+    "must_contain": ["try", "catch", "error"]
+  }
+]
