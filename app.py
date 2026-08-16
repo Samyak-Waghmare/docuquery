@@ -163,6 +163,7 @@ _defaults = {
     "collection_name": "",
     "pending_prompt":  None,
     "top_k":           4,
+    "anon_uploads":    0,
     "anon_queries":    0,
     "session_id":      str(uuid.uuid4()),
 }
@@ -569,10 +570,14 @@ if st.session_state.status in ("idle", "indexing"):
               <code>.env</code> file to enable indexing and chat.</span>
             </div>""", unsafe_allow_html=True)
 
-        uploaded = st.file_uploader(
-            "Upload PDF", type=["pdf"], label_visibility="collapsed",
-            help="Upload any PDF (max 200 MB). It's chunked and indexed automatically.",
-        )
+        if AUTH_ENABLED and not st.session_state.get("authentication_status") and st.session_state.get("anon_uploads", 0) >= 2:
+            st.error("You have reached your 2 free PDF uploads limit. Please Sign In or Sign Up to index more documents.")
+            uploaded = None
+        else:
+            uploaded = st.file_uploader(
+                "Upload PDF", type=["pdf"], label_visibility="collapsed",
+                help="Upload any PDF (max 200 MB). It's chunked and indexed automatically.",
+            )
 
         st.markdown("""
         <div class="dq-section" style="margin-top:68px;">
@@ -720,6 +725,8 @@ if st.session_state.status in ("idle", "indexing"):
 
         # Trigger indexing on a new upload
         if uploaded is not None and uploaded.name != st.session_state.indexed_file:
+            if AUTH_ENABLED and not st.session_state.get("authentication_status"):
+                st.session_state["anon_uploads"] = st.session_state.get("anon_uploads", 0) + 1
             st.session_state.status = "indexing"
             st.session_state._pending_bytes = uploaded.read()
             st.session_state._pending_name  = uploaded.name
@@ -865,18 +872,12 @@ elif st.session_state.status == "ready":
                     st.rerun()
 
     # ── Resolve prompt (chat box or a suggestion click) ────────────────────────
-    if AUTH_ENABLED and not st.session_state.get("authentication_status") and st.session_state.get("anon_queries", 0) >= 2:
-        st.error("You have reached your 2 free queries limit. Please Sign Up to continue asking questions.")
-        prompt = None
-    else:
-        prompt = st.chat_input(f'Ask about "{fname}"…')
+    prompt = st.chat_input(f'Ask about "{fname}"…')
     if st.session_state.pending_prompt:
         prompt = st.session_state.pending_prompt
         st.session_state.pending_prompt = None
 
     if prompt:
-        if AUTH_ENABLED and not st.session_state.get("authentication_status"):
-            st.session_state["anon_queries"] = st.session_state.get("anon_queries", 0) + 1
         st.session_state.messages.append({"role": "user", "content": prompt, "citations": []})
         with st.chat_message("user", avatar="🧑‍💻"):
             st.markdown(prompt)
