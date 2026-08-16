@@ -1,8 +1,8 @@
 # DocuQuery
 
-A citation-aware RAG application that lets users chat with PDFs using Gemini and Qdrant. Built with Streamlit and LangChain.
+A premium, freemium-gated, citation-aware RAG application that lets users chat with PDFs. Built with Streamlit, LangChain, Qdrant, and Google Gemini.
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-1.35+-FF4B4B.svg?logo=streamlit&logoColor=white)](https://streamlit.io)
 [![LangChain](https://img.shields.io/badge/LangChain-0.2+-1C3C3C.svg?logo=langchain&logoColor=white)](https://langchain.com)
 [![Qdrant](https://img.shields.io/badge/Qdrant-Vector_DB-DC143C.svg)](https://qdrant.tech)
@@ -11,10 +11,14 @@ A citation-aware RAG application that lets users chat with PDFs using Gemini and
 
 ## Features
 
-- **Document parsing:** Upload PDFs to instantly chunk and embed text.
-- **Streaming generation:** Fast token-by-token streaming via Gemini 2.5 Flash.
-- **Source citations:** Responses include references to the exact source page numbers to ground the LLM.
-- **Conversational memory:** Keeps track of chat history for multi-turn interactions.
+- **Document Parsing:** Upload PDFs to instantly chunk and embed text.
+- **Premium UI/UX:** Custom CSS styling with Apple-inspired frosted glass effects, modern typography, and dynamic animations.
+- **Freemium Authentication:** Integrated user accounts via `streamlit-authenticator`.
+  - Anonymous users are limited to 2 queries per session.
+  - Logged-in users have unrestricted access.
+- **Streaming Generation:** Fast token-by-token streaming via Gemini.
+- **Source Citations:** Responses include references to the exact source page numbers to ground the LLM.
+- **RAG Evaluation Suite:** Built-in benchmarking scripts (`evaluate_rag.py`) to measure Recall@K, MRR, and retrieval latency.
 
 ---
 
@@ -33,11 +37,12 @@ graph TD
     end
 
     subgraph Retrieval & Generation
-        F[User Query] -->|Gemini API| G(Query Embedding)
+        F[User Query] -->|Auth Check| F2{Rate Limit Check}
+        F2 -->|Pass| G(Query Embedding via Gemini API)
         G -->|Similarity Search| E
         E -->|Top-K Chunks + Metadata| H{Context Builder}
-        F --> H
-        H -->|Streaming| I[Gemini 2.5 Flash]
+        F2 --> H
+        H -->|Streaming| I[Gemini 3.5 Flash Lite]
         I --> J((Final Answer with Citations))
     end
 
@@ -49,11 +54,13 @@ graph TD
 ## Running Locally
 
 ### 1. Setup
-Make sure you have Python 3.10+ installed.
+Make sure you have Python 3.11+ installed.
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/docuquery.git
 cd docuquery
+python -m venv venv
+venv\Scripts\activate  # Windows
 pip install -r requirements.txt
 ```
 
@@ -63,7 +70,10 @@ You'll need a Google AI Studio API Key and a Qdrant URL/Key.
 ```bash
 cp .env.example .env
 ```
-Fill out `.env` with your credentials.
+Fill out `.env` with your credentials:
+- `GEMINI_API_KEY`
+- `QDRANT_URL`
+- `QDRANT_API_KEY`
 
 ### 3. Start App
 
@@ -73,20 +83,16 @@ streamlit run app.py
 
 ---
 
-## Deploying
+## RAG Evaluation Framework
 
-This app runs cleanly on Streamlit Community Cloud.
+DocuQuery includes an evaluation framework to benchmark retrieval quality against a predefined Q&A dataset.
 
-1. Connect your GitHub repo at [share.streamlit.io](https://share.streamlit.io).
-2. Set the Main file path to `app.py`.
-3. Under **Advanced Settings > Secrets**, map your `.env` variables into TOML:
-
-```toml
-GEMINI_API_KEY = "your_google_key"
-QDRANT_URL = "https://your-cluster-id.aws.cloud.qdrant.io:6333"
-QDRANT_API_KEY = "your_qdrant_key"
-QDRANT_COLLECTION = "docuquery_vectors"
+1. Populate `eval_set.json` with ground-truth questions and target page numbers.
+2. Run the evaluation script:
+```bash
+python evaluate_rag.py --collection your_collection_name
 ```
+3. The script outputs `Recall@K`, `MRR` (Mean Reciprocal Rank), and latency metrics to `eval_results.json`.
 
 ---
 
@@ -94,29 +100,25 @@ QDRANT_COLLECTION = "docuquery_vectors"
 
 ```text
 DocuQuery/
-├── app.py                    # Streamlit entry point
-├── chat.py                   # Chat loop and LLM call logic
-├── indexing.py               # PDF chunking and embedding pipeline
-├── style.css                 # Custom UI tweaks
-├── .env.example              # Environment variables template
-├── .gitignore                
+├── app.py                    # Main Streamlit application (UI, Auth, RAG Logic)
+├── style.css                 # Premium custom UI overrides
+├── evaluate_rag.py           # RAG retrieval evaluation script
+├── benchmark.py              # Extended benchmark utilities
+├── eval_set.json             # Ground-truth dataset for evaluation
+├── config.yaml               # User database for Streamlit Authenticator
 ├── requirements.txt          # Python dependencies
-├── nodejs.pdf                # Test document
-├── .streamlit/               
-│   ├── config.toml           # Streamlit theme
-│   └── secrets.toml.example  # Streamlit Cloud secrets template
-└── README.md                 
+├── .env                      # Environment variables
+└── .streamlit/               
+    └── config.toml           # Base Streamlit theme settings
 ```
 
 ---
 
-## Future Work (TODOs)
+## Future Work (Roadmap)
 
-- View raw context chunks under citations (not just page numbers).
-- Implement hybrid search (dense + sparse vectors).
-- Re-ranking step using a cross-encoder.
-- Persist documents across sessions (document library).
-- CI/CD pipeline via GitHub Actions.
+- **Master Refactor: Implement Hybrid Search** (BM25 + Dense retrieval via `QdrantClient` directly).
+- **Implement Faithfulness LLM-as-a-Judge**: Use an LLM to automatically evaluate RAG response quality and hallucination rates.
+- **Implement Observability Metrics**: Re-introduce UI expanders for Latency, Cost, and Confidence.
 
 ---
 
