@@ -103,13 +103,27 @@ COLLECTION_BASE = _secret("QDRANT_COLLECTION", "docuquery")
 GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/openai/"
 GEMINI_MODEL    = _secret("GEMINI_MODEL", "gemini-3.5-flash-lite")
 
+# Auth feature flag — set AUTH_ENABLED=false in Streamlit Cloud secrets to
+# skip the login wall entirely (recommended for portfolio demos so recruiters
+# aren't blocked by a signup form they can't persist through).
+AUTH_ENABLED = _secret("AUTH_ENABLED", "true").strip().lower() == "true"
+
 with open('config.yaml', 'r') as file:
     config = yaml.load(file, Loader=SafeLoader)
+
+# Cookie signing key must NEVER live in config.yaml (which is committed to git).
+# Read it from Streamlit secrets or .env instead. Fall back only in local dev.
+_cookie_key = _secret("AUTH_COOKIE_KEY", None)
+if not _cookie_key:
+    raise RuntimeError(
+        "AUTH_COOKIE_KEY is not set. Add it to .streamlit/secrets.toml or your "
+        ".env file. Generate one with: python -c \"import secrets; print(secrets.token_hex(32))\""
+    )
 
 authenticator = stauth.Authenticate(
     config['credentials'],
     config['cookie']['name'],
-    config['cookie']['key'],
+    _cookie_key,
     config['cookie']['expiry_days'],
 )
 
