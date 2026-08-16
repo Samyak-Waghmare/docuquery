@@ -1,0 +1,8 @@
+credentials:
+  usernames: {}
+cookie:
+  expiry_days: 30
+  key: docuquery_secure_cookie_key
+  name: docuquery_auth
+pre-authorized:
+  emails: []
