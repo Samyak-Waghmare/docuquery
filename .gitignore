@@ -53,3 +53,5 @@ logs/
 users.db
 
 auth.py
+
+# config.yaml intentionally tracked (credentials are empty, key is placeholder)
