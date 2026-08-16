@@ -49,3 +49,7 @@ desktop.ini
 # Logs
 *.log
 logs/
+
+users.db
+
+auth.py
